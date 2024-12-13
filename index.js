@@ -8,7 +8,7 @@ foam.CLASS({
         {
             class: 'Boolean',
             name: 'showData',
-            value: true
+            value: false
         },
         {
             name: 'dao',
@@ -47,13 +47,44 @@ foam.CLASS({
                 .add(this.SHOW_DATA)
                 .add(this.ADD_ITEM)
                 .end()
+                .br()
+                .add('nested dynamic')
                 .add(this.dynamic(function(showData) {
-                    if ( showData ) {
+                    console.log("outer");
+                    this.add(self.dynamic(function (showData) {
+                        console.log("inner");
+                        this.add('show data is ', '' + showData);
+                    }));
+                    // this.select(self.dao, function (obj) {
+                    //     //     this.start('div').add(obj.id).end()
+                    //     // })
+                }))
+                .add('after nested dynamic')
+                .br()
+                .add('simple dynamic')
+                .add(this.dynamic(function (showData) {
+                    console.log("inner");
+                    this.add('show data is ', '' + showData);
+                }))
+                .add('after simple dynamic')
+                .br()
+                .add('simple select')
+                .select(self.dao, function(obj) {
+                    this.add(obj.id);
+                })
+                .add('after simple select')
+                .br()
+                .add('nested dynamic and select')
+                .add(this.dynamic(function(showData) {
+                    console.log("outer");
+                    if (showData) {
                         this.select(self.dao, function (obj) {
-                            this.start('div').add(obj.id).end()
+                            this.add(obj.id);
                         })
                     }
-                }));
+                }))
+                .add('after nested dynamic and select');
+
         }
     ]
 })
